@@ -20,22 +20,26 @@ public class MathBall : MonoBehaviour
             throw new System.Exception("GroundTransform not initialzied");
     }
 
-    // Update is called once per frame
     void Update()
     {
         // If the ball still moving, then update its movement
         if (!bBallStopped)
-        {
+        {   
+            // Move ball
             bool bCollided = MoveBall();
+            
+            // Bounce ball if collided with ground
             if (bCollided)
             {   
-                // Get the new velocity direction 
+                // Flip velocity and alter based on bounciness coefficient
                 CurrVelocity = CurrVelocity * -1 * Bounciness;
 
                 // if not enough velocity, then stop ball movement
                 if (CurrVelocity < 0.01f)
                     bBallStopped = true;
             }
+            
+            // Calculate velocity for next frame
             CalcNewCurrentVelocity();
         }
         // Ball stopped, wait from keyboard input
@@ -85,7 +89,7 @@ public class MathBall : MonoBehaviour
         return (gameObject.transform.position.y - gameObject.transform.localScale.y / 2) < GroundTransform.position.y;
     }
 
-    // Print Velocity on ball
+    // Print Current Velocity on ball
     private void OnDrawGizmos()
     {
         GUIStyle style = new GUIStyle();
