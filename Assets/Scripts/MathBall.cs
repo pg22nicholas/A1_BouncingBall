@@ -31,8 +31,6 @@ public class MathBall : MonoBehaviour
                 // Get the new velocity direction 
                 CurrVelocity = CurrVelocity * -1 * Bounciness;
 
-                Debug.Log(CurrVelocity);
-
                 // if not enough velocity, then stop ball movement
                 if (CurrVelocity < 0.01f)
                     bBallStopped = true;
@@ -41,7 +39,11 @@ public class MathBall : MonoBehaviour
         // Ball stopped, wait from keyboard input
         else
         {
-            // TODO:
+            if (Input.GetButtonDown("Jump"))
+            {
+                bBallStopped = false;
+                CurrVelocity = 20;
+            }
         }
 
         CalcNewCurrentVelocity();

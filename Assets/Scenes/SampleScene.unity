@@ -491,7 +491,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9c3a2f9dc702a5c4ebcdaa4df0392b3a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Bounciness: 0.32
+  Bounciness: 0.43
   Gravity: -9.81
   GroundTransform: {fileID: 86717438}
 --- !u!1 &2110747456
