@@ -5,7 +5,7 @@ using UnityEngine;
 public class MathBall : MonoBehaviour
 {
 
-    [SerializeField] [Range(0, 1)] private float Bounciness = .2f;      // Bounciness of the ball (0-1) inclusive   
+    [SerializeField] [Range(0, 1)] private float Bounciness = .5f;      // Bounciness of the ball (0-1) inclusive   
     [SerializeField] private float Gravity = -9.81f;                    // Gravity coefficient
     [SerializeField] private Transform GroundTransform;                 // The ground object the ball can collide with
 
@@ -26,7 +26,8 @@ public class MathBall : MonoBehaviour
         // If the ball still moving, then update its movement
         if (!bBallStopped)
         {
-            if (MoveBall())
+            bool bCollided = MoveBall();
+            if (bCollided)
             {   
                 // Get the new velocity direction 
                 CurrVelocity = CurrVelocity * -1 * Bounciness;
@@ -35,6 +36,7 @@ public class MathBall : MonoBehaviour
                 if (CurrVelocity < 0.01f)
                     bBallStopped = true;
             }
+            CalcNewCurrentVelocity();
         }
         // Ball stopped, wait from keyboard input
         else
@@ -45,8 +47,6 @@ public class MathBall : MonoBehaviour
                 CurrVelocity = 20;
             }
         }
-
-        CalcNewCurrentVelocity();
     }
 
     // Move the ball, return true if it collided with the ground
@@ -83,5 +83,14 @@ public class MathBall : MonoBehaviour
     bool IsCollidedWithGround()
     {
         return (gameObject.transform.position.y - gameObject.transform.localScale.y / 2) < GroundTransform.position.y;
+    }
+
+    // Print Velocity on ball
+    private void OnDrawGizmos()
+    {
+        GUIStyle style = new GUIStyle();
+        style.normal.textColor = Color.black;
+        UnityEditor.Handles.color = Color.blue;
+        UnityEditor.Handles.Label(gameObject.transform.position, CurrVelocity.ToString(), style);  
     }
 }
