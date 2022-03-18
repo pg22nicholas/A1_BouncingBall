@@ -9,8 +9,7 @@ public class MathBall : MonoBehaviour
     [SerializeField] private float Gravity = -9.81f;                    // Gravity coefficient
     [SerializeField] private Transform GroundTransform;                 // The ground object the ball can collide with
 
-    private float TimeInCurrentDirection = 0f;                          // Time ball has been falling / going up
-    private float VelocityStart = 0f;                                   // Velocity start, Negatity for downward starting velocty, positive for upwards starting velocity
+    private float CurrVelocity = 0f;                                    // Current velocity of the ball
     private bool bBallStopped = false;                                  // If the ball has stopped moving
 
     // Start is called before the first frame update
@@ -24,45 +23,61 @@ public class MathBall : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Debug.Log(VelocityStart);
+        // If the ball still moving, then update its movement
         if (!bBallStopped)
         {
-            MoveBall();
+            if (MoveBall())
+            {   
+                // Get the new velocity direction 
+                CurrVelocity = CurrVelocity * -1 * Bounciness;
 
-            if (IsCollidedWithGround())
-            {
-                // TODO: Check if speed is small, then stop the ball
+                Debug.Log(CurrVelocity);
 
-                // Initial velocity upwards of ball after hitting the ground
-                
-                VelocityStart = CalcVelocity() * -1 * Bounciness;
-                TimeInCurrentDirection = 0;
-                MoveBall();
+                // if not enough velocity, then stop ball movement
+                if (CurrVelocity < 0.01f)
+                    bBallStopped = true;
             }
         }
+        // Ball stopped, wait from keyboard input
         else
         {
-            // Check is keyboard space selected to bounce the ball
+            // TODO:
         }
+
+        CalcNewCurrentVelocity();
     }
 
-    void MoveBall()
+    // Move the ball, return true if it collided with the ground
+    bool MoveBall()
     {
-        float x = gameObject.transform.position.x;
-        float y = gameObject.transform.position.y;
-        float z = gameObject.transform.position.z;
+        // amount to move ball
+        float MoveAmount = CurrVelocity * Time.deltaTime;
 
-        TimeInCurrentDirection += Time.deltaTime;
-        float MoveAmount = CalcVelocity() * Time.deltaTime;
-        //Debug.Log(velocity);
-        gameObject.transform.position = new Vector3(x, y + MoveAmount, z);
+        // Set new ball position
+        gameObject.transform.position = new Vector3(
+            gameObject.transform.position.x, 
+            gameObject.transform.position.y + MoveAmount, 
+            gameObject.transform.position.z);
+
+        // Prevent the ball from going through the ground
+        bool bCollided = IsCollidedWithGround();
+        if (bCollided)
+        {
+            gameObject.transform.position = new Vector3(
+            gameObject.transform.position.x, 
+            GroundTransform.position.y + gameObject.transform.localScale.y / 2, 
+            gameObject.transform.position.z);
+        }
+        return bCollided;
     }
 
-    float CalcVelocity()
+    // Set the new velocity of the ball
+    float CalcNewCurrentVelocity()
     {
-        return (Gravity * TimeInCurrentDirection + VelocityStart);
+        return CurrVelocity = (Gravity * Time.deltaTime + CurrVelocity);
     }
 
+    // Check if the ball has collided with the ground
     bool IsCollidedWithGround()
     {
         return (gameObject.transform.position.y - gameObject.transform.localScale.y / 2) < GroundTransform.position.y;
