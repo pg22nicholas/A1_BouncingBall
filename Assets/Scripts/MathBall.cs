@@ -25,13 +25,11 @@ public class MathBall : MonoBehaviour
         // If the ball still moving, then update its movement
         if (!bBallStopped)
         {   
-            // Move ball
             bool bCollided = MoveBall();
             
             // Bounce ball if collided with ground
             if (bCollided)
             {   
-                // Flip velocity and alter based on bounciness coefficient
                 CurrVelocity = CurrVelocity * -1 * Bounciness;
 
                 // if not enough velocity, then stop ball movement
@@ -39,7 +37,6 @@ public class MathBall : MonoBehaviour
                     bBallStopped = true;
             }
             
-            // Calculate velocity for next frame
             CalcNewCurrentVelocity();
         }
         // Ball stopped, wait from keyboard input
@@ -56,7 +53,6 @@ public class MathBall : MonoBehaviour
     // Move the ball, return true if it collided with the ground
     bool MoveBall()
     {
-        // amount to move ball
         float MoveAmount = CurrVelocity * Time.deltaTime;
 
         // Set new ball position
